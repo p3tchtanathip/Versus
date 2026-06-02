@@ -12,5 +12,10 @@ namespace Versus.API.Services
         {
             return await repo.GetAllAsync(request);
         }
+
+        public async Task<PaginatedList<TierListQueryResponse>> GetBySessionIdAsync(Guid sessionId, TierListQueryRequest request)
+        {
+            return await repo.GetBySessionIdAsync(sessionId, request);
+        }
     }
 }

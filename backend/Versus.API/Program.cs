@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Versus.API.Context;
 using Versus.API.Data;
+using Versus.API.Middleware;
 using Versus.API.Repositories;
 using Versus.API.Repositories.Interfaces;
 using Versus.API.Services;
@@ -11,6 +13,32 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("SessionId", new OpenApiSecurityScheme
+    {
+        Name = "X-Session-Id",
+        Type = SecuritySchemeType.ApiKey,
+        In = ParameterLocation.Header,
+        Description = "Session ID"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "SessionId"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 
 if (builder.Environment.IsDevelopment())
 {
@@ -26,8 +54,13 @@ builder.Services.AddDbContext<AppDbContext>(o =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 
+builder.Services.AddScoped<ICurrentSession, CurrentSession>();
+builder.Services.AddScoped<ISessionRepository, SessionRepository>();
+builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<ITierListRepository, TierListRepository>();
 builder.Services.AddScoped<ITierListService, TierListService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var app = builder.Build();
 
@@ -47,6 +80,7 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
+app.UseMiddleware<SessionMiddleware>();
 app.MapControllers();
 
 // Configure the HTTP request pipeline.
