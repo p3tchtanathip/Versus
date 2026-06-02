@@ -1,0 +1,6 @@
+@Versus.API_HostAddress = http://localhost:5045
+
+GET {{Versus.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
