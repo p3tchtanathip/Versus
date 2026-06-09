@@ -7,6 +7,8 @@ namespace Versus.API.Models
         public string ImageUrl { get; set; } = string.Empty;
         public float EloRating { get; set; } = 1000;
         public int MatchCount { get; set; } = 0;
+        public string? ExternalId { get; set; }
+        public string? ExternalSource { get; set; }
 
         // FK
         public Guid TierListId { get; set; }

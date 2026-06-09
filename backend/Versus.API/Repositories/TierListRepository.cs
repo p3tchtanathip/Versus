@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Versus.API.Data;
 using Versus.API.DTOs.Requests;
 using Versus.API.DTOs.Responses;
+using Versus.API.Models;
 using Versus.API.Models.Common;
 using Versus.API.Repositories.Interfaces;
 
@@ -9,7 +10,7 @@ namespace Versus.API.Repositories
 {
     public class TierListRepository(AppDbContext db) : ITierListRepository
     {
-        public async Task<PaginatedList<TierListQueryResponse>> GetAllAsync(TierListQueryRequest request)
+        public async Task<PaginatedList<TierListResponse>> GetAllAsync(TierListQueryRequest request)
         {
             var query = db.TierList
                 .AsNoTracking()
@@ -24,7 +25,7 @@ namespace Versus.API.Repositories
             var result = await query
                 .Skip((request.PageNumber - 1) * request.PageSize)
                 .Take(request.PageSize)
-                .Select(t => new TierListQueryResponse
+                .Select(t => new TierListResponse
                 {
                     Id = t.Id,
                     Name = t.Name,
@@ -35,7 +36,7 @@ namespace Versus.API.Repositories
                 })
                 .ToListAsync();
 
-            return new PaginatedList<TierListQueryResponse>(
+            return new PaginatedList<TierListResponse>(
                 result,
                 count,
                 request.PageNumber,
@@ -43,7 +44,7 @@ namespace Versus.API.Repositories
             );
         }
 
-        public async Task<PaginatedList<TierListQueryResponse>> GetBySessionIdAsync(Guid sessionId, TierListQueryRequest request)
+        public async Task<PaginatedList<TierListResponse>> GetBySessionIdAsync(Guid sessionId, TierListQueryRequest request)
         {
             var query = db.TierList
                 .AsNoTracking()
@@ -59,7 +60,7 @@ namespace Versus.API.Repositories
             var result = await query
                 .Skip((request.PageNumber - 1) * request.PageSize)
                 .Take(request.PageSize)
-                .Select(t => new TierListQueryResponse
+                .Select(t => new TierListResponse
                 {
                     Id = t.Id,
                     Name = t.Name,
@@ -70,12 +71,38 @@ namespace Versus.API.Repositories
                 })
                 .ToListAsync();
 
-            return new PaginatedList<TierListQueryResponse>(
+            return new PaginatedList<TierListResponse>(
                 result,
                 count,
                 request.PageNumber,
                 request.PageSize
             );
+        }
+
+        public async Task<TierListResponse?> GetByIdAsync(Guid id)
+        {
+            return await db.TierList
+                .AsNoTracking()
+                .Where(t => t.Id == id)
+                .Select(t => new TierListResponse
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    CategoryName = t.Category.Name,
+                    ItemCount = t.Items.Count(),
+                    MatchCount = t.Matches.Count(),
+                    CreatedAt = t.CreatedAt
+                })
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<Guid> CreateAsync(TierList tierList, IEnumerable<Item> items)
+        {
+            await db.TierList.AddAsync(tierList);
+            await db.Items.AddRangeAsync(items);
+
+            await db.SaveChangesAsync();
+            return tierList.Id;
         }
     }
 }
