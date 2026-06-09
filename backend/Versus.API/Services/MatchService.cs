@@ -29,13 +29,22 @@ namespace Versus.API.Services
                 throw new ArgumentException("Tier list must have at least 2 items to match.");
             }
 
+            var totalPairs = items.Count * (items.Count - 1) / 2;
+            var playedCount = await matchRepo.CountSessionMatchesAsync(tierListId, sessionId);
+
             var pairHistory = await matchRepo.GetSessionPairHistoryAsync(tierListId, sessionId);
             var (itemA, itemB) = pairingService.SelectPair(items, pairHistory);
 
             return new NextMatchResponse
             {
-                ItemA = MapItem(itemA),
-                ItemB = MapItem(itemB)
+                Match = itemA != null && itemB != null
+                    ? new MatchPairDto { ItemA = MapItem(itemA), ItemB = MapItem(itemB) }
+                    : null,
+                Progress = new ProgressDto
+                {
+                    Played = playedCount,
+                    Total = totalPairs
+                }
             };
         }
 

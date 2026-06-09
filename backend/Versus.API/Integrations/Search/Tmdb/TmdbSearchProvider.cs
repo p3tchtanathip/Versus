@@ -13,12 +13,12 @@ namespace Versus.API.Integrations.Search.Tmdb
 
         public bool CanHandle(TierListCategory category)
         {
-            return category is TierListCategory.Movie or TierListCategory.Series;
+            return category is TierListCategory.Movies or TierListCategory.Series;
         }
 
         public async Task<List<SearchResponse>> SearchAsync(SearchRequest request)
         {
-            var mediaType = request.Category == TierListCategory.Movie ? "movie" : "tv";
+            var mediaType = request.Category == TierListCategory.Movies ? "movie" : "tv";
             var token = configuration["TMDB:ReadAccessToken"];
             if (string.IsNullOrWhiteSpace(token))
             {

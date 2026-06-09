@@ -54,6 +54,12 @@ namespace Versus.API.Repositories
             return match;
         }
 
+        public async Task<int> CountSessionMatchesAsync(Guid tierListId, Guid sessionId)
+        {
+            return await db.Matches
+                .CountAsync(m => m.TierListId == tierListId && m.SessionId == sessionId);
+        }
+
         private static (Guid, Guid) NormalizePairKey(Guid idA, Guid idB)
         {
             return idA.CompareTo(idB) < 0 ? (idA, idB) : (idB, idA);

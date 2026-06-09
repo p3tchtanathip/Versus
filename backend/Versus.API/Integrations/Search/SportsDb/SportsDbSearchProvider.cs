@@ -11,7 +11,7 @@ namespace Versus.API.Integrations.Search.SportsDb
 
         public bool CanHandle(TierListCategory category)
         {
-            return category == TierListCategory.Sports;
+            return category == TierListCategory.Sport;
         }
 
         public async Task<List<SearchResponse>> SearchAsync(SearchRequest request)

@@ -8,6 +8,6 @@ namespace Versus.API.DTOs.Responses
         public ItemResponse Loser { get; set; } = null!;
         public float WinnerDelta { get; set; }
         public float LoserDelta { get; set; }
-        public DateTime PlayedAt { get; set; }
+        public DateTimeOffset PlayedAt { get; set; }
     }
 }

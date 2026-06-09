@@ -3,8 +3,8 @@ namespace Versus.API.Models
     public class Session
     {
         public Guid Id { get; set; } = Guid.NewGuid();
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public DateTime LastSeenAt { get; set; }
+        public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+        public DateTimeOffset LastSeenAt { get; set; }
 
         // Navigation Property
         public ICollection<TierList> TierLists { get; set; } = [];

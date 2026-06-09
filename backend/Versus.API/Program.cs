@@ -65,6 +65,17 @@ try
         });
     }
 
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("Frontend", policy =>
+        {
+            policy
+                .WithOrigins("http://localhost:5173")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+    });
+
     builder.Services.AddDbContext<AppDbContext>(o =>
         o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -109,6 +120,7 @@ try
     builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
     builder.Services.AddScoped<ICategoryService, CategoryService>();
     builder.Services.AddScoped<ISearchService, SearchService>();
+
     builder.Services.AddHttpClient<ISearchProvider, TmdbSearchProvider>();
     builder.Services.AddHttpClient<ISearchProvider, LastFmSearchProvider>();
     builder.Services.AddHttpClient<ISearchProvider, SportsDbSearchProvider>();
@@ -139,11 +151,12 @@ try
         }
     }
 
-    app.UseMiddleware<SessionMiddleware>();
-    app.UseMiddleware<ExceptionMiddleware>();
-    app.MapControllers();
+    app.UseHttpsRedirection();
+    app.UseCors("Frontend");
 
-    // Configure the HTTP request pipeline.
+    app.UseMiddleware<ExceptionMiddleware>();
+    app.UseMiddleware<SessionMiddleware>();
+
     if (app.Environment.IsDevelopment())
     {
         app.MapOpenApi();
@@ -151,7 +164,8 @@ try
         app.UseSwaggerUI();
     }
 
-    app.UseHttpsRedirection();
+    app.MapControllers();
+
     app.Run();
 }
 catch (Exception ex)

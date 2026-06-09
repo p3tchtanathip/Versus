@@ -2,9 +2,9 @@ namespace Versus.API.Models.Enums
 {
     public enum TierListCategory
     {
-        Movie,
+        Movies,
         Series,
         Music,
-        Sports
+        Sport
     }
 }

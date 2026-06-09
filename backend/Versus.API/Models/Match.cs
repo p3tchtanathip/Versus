@@ -3,7 +3,7 @@ namespace Versus.API.Models
     public class Match
     {
         public Guid Id { get; set; } = Guid.NewGuid();
-        public DateTime PlayedAt { get; set; } = DateTime.UtcNow;
+        public DateTimeOffset PlayedAt { get; set; } = DateTimeOffset.UtcNow;
 
         // FK
         public Guid TierListId { get; set; }

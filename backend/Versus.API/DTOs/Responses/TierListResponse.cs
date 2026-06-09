@@ -7,6 +7,6 @@ namespace Versus.API.DTOs.Responses
         public string? CategoryName { get; set; }
         public int ItemCount { get; set; }
         public int MatchCount { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
     }
 }

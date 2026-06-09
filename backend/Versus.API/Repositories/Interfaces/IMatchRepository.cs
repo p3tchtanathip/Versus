@@ -12,5 +12,7 @@ namespace Versus.API.Repositories.Interfaces
             EloHistory loserHistory,
             Item winner,
             Item loser);
+
+        Task<int> CountSessionMatchesAsync(Guid tierListId, Guid sessionId);
     }
 }
