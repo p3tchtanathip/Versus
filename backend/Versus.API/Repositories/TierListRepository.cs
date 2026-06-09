@@ -15,6 +15,7 @@ namespace Versus.API.Repositories
             var query = db.TierList
                 .AsNoTracking()
                 .Where(t =>
+                    t.DeletedAt == null &&
                     (string.IsNullOrWhiteSpace(request.Search) || t.Name.Contains(request.Search)) &&
                     (!request.CategoryId.HasValue || t.CategoryId == request.CategoryId.Value)
                 )
@@ -49,6 +50,7 @@ namespace Versus.API.Repositories
             var query = db.TierList
                 .AsNoTracking()
                 .Where(t =>
+                    t.DeletedAt == null &&
                     t.CreatorSessionId == sessionId &&
                     (string.IsNullOrWhiteSpace(request.Search) || t.Name.Contains(request.Search)) &&
                     (!request.CategoryId.HasValue || t.CategoryId == request.CategoryId.Value)
@@ -83,7 +85,7 @@ namespace Versus.API.Repositories
         {
             return await db.TierList
                 .AsNoTracking()
-                .Where(t => t.Id == id)
+                .Where(t => t.Id == id && t.DeletedAt == null)
                 .Select(t => new TierListResponse
                 {
                     Id = t.Id,
@@ -96,13 +98,24 @@ namespace Versus.API.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<Guid> CreateAsync(TierList tierList, IEnumerable<Item> items)
+        public async Task<TierList?> FindByIdAsync(Guid id)
+        {
+            return await db.TierList
+                .FirstOrDefaultAsync(t => t.Id == id && t.DeletedAt == null);
+        }
+
+        public async Task<Guid> CreateAsync(TierList tierList)
         {
             await db.TierList.AddAsync(tierList);
-            await db.Items.AddRangeAsync(items);
-
             await db.SaveChangesAsync();
             return tierList.Id;
+        }
+
+        public async Task DeleteAsync(Guid id)
+        {
+            await db.TierList
+                .Where(t => t.Id == id && t.DeletedAt == null)
+                .ExecuteUpdateAsync(s => s.SetProperty(t => t.DeletedAt, DateTime.UtcNow));
         }
     }
 }

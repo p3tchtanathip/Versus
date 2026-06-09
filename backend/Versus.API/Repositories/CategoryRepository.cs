@@ -22,5 +22,10 @@ namespace Versus.API.Repositories
 
             return result;
         }
+
+        public Task<bool> ExistsAsync(int id)
+        {
+            return db.Categories.AnyAsync(c => c.Id == id && c.IsActive);
+        }
     }
 }

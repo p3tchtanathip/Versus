@@ -10,6 +10,8 @@ namespace Versus.API.Repositories.Interfaces
         Task<PaginatedList<TierListResponse>> GetAllAsync(TierListQueryRequest request);
         Task<PaginatedList<TierListResponse>> GetBySessionIdAsync(Guid sessionId, TierListQueryRequest request);
         Task<TierListResponse?> GetByIdAsync(Guid id);
-        Task<Guid> CreateAsync(TierList tierList, IEnumerable<Item> items);
+        Task<TierList?> FindByIdAsync(Guid id);
+        Task<Guid> CreateAsync(TierList tierList);
+        Task DeleteAsync(Guid id);
     }
 }

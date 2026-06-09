@@ -100,6 +100,12 @@ try
     builder.Services.AddScoped<ISessionService, SessionService>();
     builder.Services.AddScoped<ITierListRepository, TierListRepository>();
     builder.Services.AddScoped<ITierListService, TierListService>();
+    builder.Services.AddScoped<IItemRepository, ItemRepository>();
+    builder.Services.AddScoped<IItemService, ItemService>();
+    builder.Services.AddScoped<IMatchRepository, MatchRepository>();
+    builder.Services.AddScoped<IMatchService, MatchService>();
+    builder.Services.AddSingleton<IEloService, EloService>();
+    builder.Services.AddSingleton<IPairingService, PairingService>();
     builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
     builder.Services.AddScoped<ICategoryService, CategoryService>();
     builder.Services.AddScoped<ISearchService, SearchService>();

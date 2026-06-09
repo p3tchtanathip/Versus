@@ -9,6 +9,8 @@ namespace Versus.API.Services.Interfaces
         Task<PaginatedList<TierListResponse>> GetAllAsync(TierListQueryRequest request);
         Task<PaginatedList<TierListResponse>> GetMeAsync(TierListQueryRequest request);
         Task<TierListResponse> GetByIdAsync(Guid id);
-        // Task<Guid> CreateAsync(CreateTierListRequest request);
+        Task<TierListResponse> CreateAsync(CreateTierListRequest request);
+        Task DeleteAsync(Guid id);
+        Task<TierListResultsResponse> GetResultsAsync(Guid id);
     }
 }

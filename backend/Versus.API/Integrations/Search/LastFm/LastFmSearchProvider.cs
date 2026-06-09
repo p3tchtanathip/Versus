@@ -42,7 +42,7 @@ namespace Versus.API.Integrations.Search.LastFm
         {
             return new SearchResponse
             {
-                ExternalId = track.Mbid,
+                ExternalId = !string.IsNullOrWhiteSpace(track.Mbid) ? track.Mbid : $"{track.Artist}::{track.Name}".ToLowerInvariant(),
                 ExternalSource = ExternalSource.LastFm,
                 Name = string.IsNullOrWhiteSpace(track.Artist) ? track.Name : $"{track.Name} - {track.Artist}",
                 ImageUrl = GetImageUrl(track.Images),
