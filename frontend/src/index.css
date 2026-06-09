@@ -1,1 +1,95 @@
 @import "tailwindcss";
+
+@theme {
+  --color-background: #0A0A0F;
+  --color-surface: #13131A;
+  --color-surface-hover: #1A1A2E;
+  --color-border: #2A2A3A;
+  --color-border-hover: #3A3A4A;
+  --color-primary: #E8FF47;
+  --color-secondary: #7B5EFF;
+  --color-foreground: #F0F0F0;
+  --color-muted: #7A7A8C;
+  --color-win: #39FF6A;
+  --color-lose: #FF3939;
+  --color-tier-s: #FFD700;
+  --color-tier-a: #39FF6A;
+  --color-tier-b: #4D96FF;
+  --color-tier-c: #7B5EFF;
+  --color-tier-d: #7A7A8C;
+  --color-tier-f: #FF3939;
+
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2A2A3A transparent;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@keyframes grid-shift {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(40px, 40px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes scan-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-out-down {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(20px); }
+}
+
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-60px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(60px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes glow-pulse-win {
+  0%, 100% { box-shadow: 0 0 20px rgba(57, 255, 106, 0.3); }
+  50% { box-shadow: 0 0 50px rgba(57, 255, 106, 0.6); }
+}
+
+@keyframes glow-pulse-vs {
+  0%, 100% { box-shadow: 0 0 20px rgba(232, 255, 71, 0.3); }
+  50% { box-shadow: 0 0 60px rgba(232, 255, 71, 0.7); }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.4s ease-out;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.5s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.5s ease-out;
+}
