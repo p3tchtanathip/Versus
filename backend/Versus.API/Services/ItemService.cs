@@ -128,6 +128,7 @@ namespace Versus.API.Services
             }
 
             var hasDuplicates = items
+                .Where(i => !string.IsNullOrWhiteSpace(i.ExternalId))
                 .GroupBy(i => i.ExternalId)
                 .Any(g => g.Count() > 1);
 
