@@ -93,7 +93,7 @@ namespace Versus.API.Integrations.Search.SportsDb
                 ExternalId = team.IdTeam,
                 ExternalSource = ExternalSource.SportsDb,
                 Name = team.StrTeam,
-                ImageUrl = SearchProviderText.FirstNotEmpty(team.StrTeamBadge, team.StrTeamLogo, team.StrTeamFanart1),
+                ImageUrl = SearchProviderText.FirstNotEmpty(team.StrBadge, team.StrLogo, team.StrFanart1),
                 Metadata = SearchProviderJson.SerializeMetadata(new
                 {
                     type = "team",

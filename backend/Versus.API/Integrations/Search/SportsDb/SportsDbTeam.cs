@@ -8,8 +8,8 @@ namespace Versus.API.Integrations.Search.SportsDb
         public string? StrLeague { get; set; }
         public string? StrCountry { get; set; }
         public string? StrStadium { get; set; }
-        public string? StrTeamBadge { get; set; }
-        public string? StrTeamLogo { get; set; }
-        public string? StrTeamFanart1 { get; set; }
+        public string? StrBadge { get; set; }
+        public string? StrLogo { get; set; }
+        public string? StrFanart1 { get; set; }
     }
 }
