@@ -9,16 +9,14 @@ namespace Versus.API.Services
         private const float BattleCountWeight = 0.1f;
         private const float RandomWeight = 0.05f;
 
-        public (Item ItemA, Item ItemB) SelectPair(
+        public (Item ItemA, Item ItemB)? SelectPair(
             IReadOnlyList<Item> items,
             IReadOnlySet<(Guid, Guid)> sessionPairHistory)
         {
             var unseenPairs = GetCandidatePairs(items, sessionPairHistory, unseenOnly: true);
-            var candidates = unseenPairs.Count > 0
-                ? unseenPairs
-                : GetCandidatePairs(items, sessionPairHistory, unseenOnly: false);
+            if (unseenPairs.Count == 0) return null;
 
-            var best = candidates.MinBy(c => c.Score);
+            var best = unseenPairs.MinBy(c => c.Score);
             return (best!.ItemA, best!.ItemB);
         }
 

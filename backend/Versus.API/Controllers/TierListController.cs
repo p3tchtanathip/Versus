@@ -131,6 +131,15 @@ namespace Versus.API.Controllers
             });
         }
 
+        [HttpPost("{id:guid}/reset-session")]
+        public async Task<IActionResult> ResetSession([FromRoute] Guid id)
+        {
+            logger.LogInformation("Resetting session history. TierListId={TierListId}", id);
+
+            await matchService.ResetSessionHistoryAsync(id);
+            return Ok(new ApiResponse<object> { Success = true });
+        }
+
         [HttpGet("{id:guid}/history")]
         public async Task<IActionResult> GetHistory([FromRoute] Guid id)
         {

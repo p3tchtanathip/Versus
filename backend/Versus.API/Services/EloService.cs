@@ -16,15 +16,15 @@ namespace Versus.API.Services
             var winnerExpected = ExpectedScore(winnerRatingBefore, loserRatingBefore);
             var loserExpected = ExpectedScore(loserRatingBefore, winnerRatingBefore);
 
-            var winnerDelta = KFactor * (1f - winnerExpected);
-            var loserDelta = KFactor * (0f - loserExpected);
+            var winnerDelta = (int)MathF.Round(KFactor * (1f - winnerExpected));
+            var loserDelta = (int)MathF.Round(KFactor * (0f - loserExpected));
 
             return new EloResult(
-                winnerRatingBefore,
-                winnerRatingBefore + winnerDelta,
+                (int)winnerRatingBefore,
+                (int)winnerRatingBefore + winnerDelta,
                 winnerDelta,
-                loserRatingBefore,
-                loserRatingBefore + loserDelta,
+                (int)loserRatingBefore,
+                (int)loserRatingBefore + loserDelta,
                 loserDelta);
         }
 

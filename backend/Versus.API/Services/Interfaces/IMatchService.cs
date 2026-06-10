@@ -8,5 +8,6 @@ namespace Versus.API.Services.Interfaces
         Task<NextMatchResponse> GetNextMatchAsync(Guid tierListId);
         Task<MatchResponse> CreateAsync(CreateMatchRequest request);
         Task<List<MatchResponse>> GetHistoryAsync(Guid tierListId, int limit = 10);
+        Task ResetSessionHistoryAsync(Guid tierListId);
     }
 }

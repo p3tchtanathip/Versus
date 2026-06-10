@@ -11,7 +11,7 @@ namespace Versus.API.Repositories
         {
             var matches = await db.Matches
                 .AsNoTracking()
-                .Where(m => m.TierListId == tierListId && m.SessionId == sessionId)
+                .Where(m => m.TierListId == tierListId && m.SessionId == sessionId && !m.IsPlayAgain)
                 .Select(m => new { m.WinnerId, m.LoserId })
                 .ToListAsync();
 
@@ -57,7 +57,14 @@ namespace Versus.API.Repositories
         public async Task<int> CountSessionMatchesAsync(Guid tierListId, Guid sessionId)
         {
             return await db.Matches
-                .CountAsync(m => m.TierListId == tierListId && m.SessionId == sessionId);
+                .CountAsync(m => m.TierListId == tierListId && m.SessionId == sessionId && !m.IsPlayAgain);
+        }
+
+        public async Task ArchiveSessionMatchesAsync(Guid tierListId, Guid sessionId)
+        {
+            await db.Matches
+                .Where(m => m.TierListId == tierListId && m.SessionId == sessionId && !m.IsPlayAgain)
+                .ExecuteUpdateAsync(s => s.SetProperty(m => m.IsPlayAgain, true));
         }
 
         private static (Guid, Guid) NormalizePairKey(Guid idA, Guid idB)

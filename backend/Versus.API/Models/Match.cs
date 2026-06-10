@@ -12,6 +12,8 @@ namespace Versus.API.Models
         public Guid WinnerId { get; set; }
         public Guid LoserId { get; set; }
 
+        public bool IsPlayAgain { get; set; } = false;
+
         // Navigation Property
         public TierList TierList { get; set; } = null!;
         public Session Session { get; set; } = null!;

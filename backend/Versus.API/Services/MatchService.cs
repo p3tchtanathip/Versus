@@ -33,7 +33,19 @@ namespace Versus.API.Services
             var playedCount = await matchRepo.CountSessionMatchesAsync(tierListId, sessionId);
 
             var pairHistory = await matchRepo.GetSessionPairHistoryAsync(tierListId, sessionId);
-            var (itemA, itemB) = pairingService.SelectPair(items, pairHistory);
+
+            var pair = pairingService.SelectPair(items, pairHistory);
+
+            if (pair is null)
+            {
+                return new NextMatchResponse
+                {
+                    Match = null,
+                    Progress = new ProgressDto { Played = playedCount, Total = totalPairs }
+                };
+            }
+
+            var (itemA, itemB) = pair.Value;
 
             return new NextMatchResponse
             {
@@ -108,6 +120,16 @@ namespace Versus.API.Services
                 LoserDelta = eloResult.LoserDelta,
                 PlayedAt = savedMatch.PlayedAt
             };
+        }
+
+        public async Task ResetSessionHistoryAsync(Guid tierListId)
+        {
+            var sessionId = RequireSession();
+
+            _ = await tierListRepo.FindByIdAsync(tierListId)
+                ?? throw new NotFoundException("Tier list not found.");
+
+            await matchRepo.ArchiveSessionMatchesAsync(tierListId, sessionId);
         }
 
         public async Task<List<MatchResponse>> GetHistoryAsync(Guid tierListId, int limit = 10)

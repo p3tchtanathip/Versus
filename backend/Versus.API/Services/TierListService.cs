@@ -14,6 +14,7 @@ namespace Versus.API.Services
         ICategoryRepository categoryRepo,
         IItemRepository itemRepo,
         IItemService itemService,
+        IMatchRepository matchRepo,
         ICurrentSession session) : ITierListService
     {
         private static readonly string[] TierOrder = ["S", "A", "B", "C", "D"];
@@ -35,6 +36,13 @@ namespace Versus.API.Services
         public async Task<TierListResponse> GetByIdAsync(Guid id)
         {
             var tierList = await repo.GetByIdAsync(id) ?? throw new NotFoundException("Tier list not found.");
+
+            if (session.SessionId is Guid sessionId)
+            {
+                tierList.PlayedCount = await matchRepo.CountSessionMatchesAsync(id, sessionId);
+                tierList.TotalPairs = tierList.ItemCount * (tierList.ItemCount - 1) / 2;
+            }
+
             return tierList;
         }
 

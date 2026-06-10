@@ -1,10 +1,10 @@
 namespace Versus.API.Models
 {
     public record EloResult(
-        float WinnerRatingBefore,
-        float WinnerRatingAfter,
-        float WinnerDelta,
-        float LoserRatingBefore,
-        float LoserRatingAfter,
-        float LoserDelta);
+        int WinnerRatingBefore,
+        int WinnerRatingAfter,
+        int WinnerDelta,
+        int LoserRatingBefore,
+        int LoserRatingAfter,
+        int LoserDelta);
 }

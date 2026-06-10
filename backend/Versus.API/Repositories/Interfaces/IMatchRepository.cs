@@ -14,5 +14,6 @@ namespace Versus.API.Repositories.Interfaces
             Item loser);
 
         Task<int> CountSessionMatchesAsync(Guid tierListId, Guid sessionId);
+        Task ArchiveSessionMatchesAsync(Guid tierListId, Guid sessionId);
     }
 }
