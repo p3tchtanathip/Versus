@@ -1,31 +1,40 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MoveLeft, Copy, ChevronDown, ChevronUp, Sword } from 'lucide-react';
+import { MoveLeft, Copy, ChevronDown, ChevronUp, Sword, RefreshCw } from 'lucide-react';
 import { Button, Toast, TierRow, HistoryRow } from '../components/ui';
 import { useMatchStore } from '../stores/matchStore';
 import { useTierListStore } from '../stores/tierListStore';
+import { timeAgo } from '../utils/time';
+import api from '../lib/api';
 
 const Results = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { currentList } = useTierListStore();
-  const { results, history, loading, fetchResults, fetchHistory } = useMatchStore();
+  const { currentList, fetchById } = useTierListStore();
+  const { results, history, resultsLoading, fetchResults, fetchHistory } = useMatchStore();
 
   const [historyOpen, setHistoryOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   useEffect(() => {
+    fetchById(id!);
     fetchResults(id!);
     fetchHistory(id!);
-  }, [id, fetchResults, fetchHistory]);
+  }, [id, fetchById, fetchResults, fetchHistory]);
 
   const handleShare = useCallback(() => {
     navigator.clipboard.writeText(window.location.href);
     setToastMsg('Link copied!');
   }, []);
 
+  const handlePlayAgain = useCallback(async () => {
+    await api.post(`/lists/${id}/reset-session`, {});
+    navigate(`/battle/${id}`);
+  }, [id, navigate]);
+
   const tiers = results?.tiers ?? [];
-  const lastMatch = history.length > 0 ? history[history.length - 1] : null;
+  const lastMatch = history.length > 0 ? history[0] : null;
+  const isComplete = currentList ? currentList.playedCount >= currentList.totalPairs : false;
 
   return (
     <div className="min-h-screen bg-background">
@@ -41,9 +50,9 @@ const Results = () => {
           </h1>
 
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-3 text-sm font-body text-muted">
-            <span>{history.length} total matches</span>
+            <span>{currentList?.matchCount} total matches</span>
             <span className="w-1 h-1 rounded-full bg-border" />
-            <span>{tiers.reduce((s, t) => s + t.items.length, 0)} items</span>
+            <span>{currentList?.itemCount} items</span>
             {lastMatch && (
               <>
                 <span className="w-1 h-1 rounded-full bg-border" />
@@ -53,10 +62,17 @@ const Results = () => {
           </div>
 
           <div className="flex gap-3 mt-6">
-            <Button as="link" to={`/battle/${id}`} variant="primary" size="md">
-              <Sword className="w-4 h-4" />
-              BATTLE MORE
-            </Button>
+            {isComplete ? (
+              <Button as="button" variant="primary" size="md" onClick={handlePlayAgain}>
+                <RefreshCw className="w-4 h-4" />
+                PLAY AGAIN
+              </Button>
+            ) : (
+              <Button as="link" to={`/battle/${id}`} variant="primary" size="md">
+                <Sword className="w-4 h-4" />
+                BATTLE MORE
+              </Button>
+            )}
             <Button as="button" variant="ghost" size="md" onClick={handleShare}>
               <Copy className="w-4 h-4" />
               SHARE LIST
@@ -66,7 +82,7 @@ const Results = () => {
       </header>
 
       <section className="max-w-5xl mx-auto px-6 py-10">
-        {loading && tiers.length === 0 ? (
+        {resultsLoading && tiers.length === 0 ? (
           <div className="flex items-center justify-center py-20">
             <div className="w-8 h-8 border-2 border-primary/50 border-t-primary rounded-full animate-spin" />
           </div>
@@ -81,7 +97,6 @@ const Results = () => {
         <div className="mt-12 border-t border-border/50 pt-8">
           <button
             onClick={() => {
-              if (!historyOpen) fetchHistory(id!);
               setHistoryOpen(!historyOpen);
             }}
             className="flex items-center gap-2 font-display font-bold text-lg text-foreground hover:text-primary transition-colors w-full text-left"
@@ -96,7 +111,7 @@ const Results = () => {
               {history.length === 0 ? (
                 <p className="text-center py-8 font-body text-sm text-muted">No matches played yet.</p>
               ) : (
-                [...history].reverse().map((match, i) => (
+                [...history].map((match, i) => (
                   <HistoryRow key={match.id} match={match} index={i} />
                 ))
               )}
@@ -109,15 +124,5 @@ const Results = () => {
     </div>
   );
 };
-
-function timeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 60) return `${mins}m ago`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  return `${days}d ago`;
-}
 
 export default Results;

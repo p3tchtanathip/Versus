@@ -8,6 +8,8 @@ interface MatchState {
     results: TierListResultsResponse | null;
     progress: Progress | null;
     loading: boolean;
+    resultsLoading: boolean;
+    historyLoading: boolean;
     error: string | null;
 
     fetchNextMatch: (tierListId: string) => Promise<void>;
@@ -22,6 +24,8 @@ export const useMatchStore = create<MatchState>((set) => ({
     results: null,
     progress: null,
     loading: false,
+    resultsLoading: false,
+    historyLoading: false,
     error: null,
 
     fetchNextMatch: async (tierListId: string) => {
@@ -53,26 +57,26 @@ export const useMatchStore = create<MatchState>((set) => ({
     },
 
     fetchHistory: async (tierListId: string) => {
-        set({ loading: true, error: null });
+        set({ historyLoading: true, error: null });
         try {
             const history = await api.get<MatchResponse[]>(`/lists/${tierListId}/history`);
-            set({ history, loading: false });
+            set({ history, historyLoading: false });
         } catch (err) {
             set({
-                loading: false,
+                historyLoading: false,
                 error: err instanceof Error ? err.message : "Unknown error",
             });
         }
     },
 
     fetchResults: async (tierListId: string) => {
-        set({ loading: true, error: null });
+        set({ resultsLoading: true, error: null });
         try {
             const results = await api.get<TierListResultsResponse>(`/lists/${tierListId}/results`);
-            set({ results, loading: false });
+            set({ results, resultsLoading: false });
         } catch (err) {
             set({
-                loading: false,
+                resultsLoading: false,
                 error: err instanceof Error ? err.message : "Unknown error",
             });
         }

@@ -17,7 +17,7 @@ const Battle = () => {
   const navigate = useNavigate();
 
   const { loading, currentMatch, progress, fetchNextMatch, submitMatch } = useMatchStore();
-  const { currentList } = useTierListStore();
+  const { currentList, fetchByIdIfNeeded } = useTierListStore();
 
   const [voteState, setVoteState] = useState<VoteState>('voting');
   const [winner, setWinner] = useState<'left' | 'right' | null>(null);
@@ -25,8 +25,18 @@ const Battle = () => {
   const [animKey, setAnimKey] = useState(0);
 
   useEffect(() => {
+    fetchByIdIfNeeded(id!);
+  }, [id, fetchByIdIfNeeded]);
+
+  useEffect(() => {
     fetchNextMatch(id!);
   }, [id, fetchNextMatch]);
+
+  useEffect(() => {
+    if (!loading && !currentMatch && progress && progress.played >= progress.total) {
+      navigate(`/results/${id}`);
+    }
+  }, [currentMatch, loading, progress, id, navigate]);
 
   const handleVote = useCallback(
     async (side: 'left' | 'right') => {

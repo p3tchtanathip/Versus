@@ -14,6 +14,7 @@ interface TierListState {
     fetchLists: () => Promise<void>;
     fetchMyLists: () => Promise<void>;
     fetchById: (id: string) => Promise<void>;
+    fetchByIdIfNeeded: (id: string) => Promise<void>;
     create: (req: CreateTierListRequest) => Promise<TierListResponse>;
     deleteList: (id: string) => Promise<void>;
     setQuery: (partial: Partial<TierListQueryRequest>) => void;
@@ -66,6 +67,12 @@ export const useTierListStore = create<TierListState>((set, get) => ({
                 error: err instanceof Error ? err.message : "Unknown error",
             });
         }
+    },
+
+    fetchByIdIfNeeded: async (id: string) => {
+        const { currentList } = get();
+        if (currentList?.id === id) return;
+        return get().fetchById(id);
     },
 
     create: async (req: CreateTierListRequest) => {

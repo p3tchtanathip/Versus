@@ -4,6 +4,8 @@ export interface TierListResponse {
     categoryName: string;
     itemCount: number;
     matchCount: number;
+    playedCount: number;
+    totalPairs: number;
     createdAt: string;
 }
 

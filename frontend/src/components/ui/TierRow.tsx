@@ -34,11 +34,11 @@ export const TierRow = ({ tier, index }: { tier: TierGroupResponse; index: numbe
             <button
               key={item.id}
               onClick={() => setSelectedItem(selectedItem === item.id ? null : item.id)}
-              className={`group flex items-center gap-2.5 rounded-xl border bg-surface px-3 py-2.5 transition-all duration-200 hover:border-primary/40 hover:bg-surface-hover ${
+              className={`cursor-pointer group flex items-center gap-2.5 rounded-xl border bg-surface px-3 py-2.5 transition-all duration-200 hover:border-primary/40 hover:bg-surface-hover ${
                 selectedItem === item.id ? 'border-primary/50 ring-1 ring-primary/30' : 'border-border'
               }`}
             >
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-secondary/40 to-secondary/10 flex items-center justify-center shrink-0 overflow-hidden">
+              <div className="w-8 h-8 rounded-full bg-linear-to-br from-secondary/40 to-secondary/10 flex items-center justify-center shrink-0 overflow-hidden">
                 {item.imageUrl ? (
                   <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
                 ) : (

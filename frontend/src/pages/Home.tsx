@@ -5,18 +5,7 @@ import { useCategoryStore } from '../stores/categoryStore';
 import { Button, Card, CategoryBadge } from '../components/ui';
 import { MoveRight, Star } from 'lucide-react';
 import type { TierListResponse } from '../models/tierList';
-
-function timeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const days = Math.floor(diff / 86400000);
-  if (days === 0) return 'today';
-  if (days === 1) return '1 day ago';
-  return `${days} days ago`;
-}
-
-function formatNumber(n: number): string {
-  return n.toLocaleString();
-}
+import { timeAgoDays, formatNumber } from '../utils/time';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -132,7 +121,7 @@ const Home = () => {
                 <span className="w-1 h-1 rounded-full bg-border" />
                 <span>{list.itemCount} items</span>
                 <span className="w-1 h-1 rounded-full bg-border" />
-                <span>{timeAgo(list.createdAt)}</span>
+                <span>{timeAgoDays(list.createdAt)}</span>
               </div>
 
               <div className="flex justify-end">
