@@ -5,6 +5,11 @@ let sessionPromise: Promise<string> | null = null;
 async function createSession(): Promise<string> {
     const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5045/api";
     const response = await fetch(`${API_URL}/sessions`, { method: 'POST' });
+
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+    }
+
     const data = await response.json();
     const sessionId: string = data.data;
     localStorage.setItem(SESSION_KEY, sessionId);
