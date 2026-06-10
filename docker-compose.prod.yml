@@ -1,0 +1,41 @@
+services:
+  frontend:
+    image: versusacr.azurecr.io/versus-frontend:latest
+    restart: unless-stopped
+
+  backend:
+    image: versusacr.azurecr.io/versus-backend:latest
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      TMDB__ReadAccessToken: ${TMDB_READ_ACCESS_TOKEN}
+      LastFm__ApiKey: ${LASTFM_API_KEY}
+      TheSportsDB__ApiKey: ${SPORT_API_KEY}
+      ConnectionStrings__DefaultConnection: "Server=versus-sqlserver-1;Database=VersusDB;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;"
+    depends_on:
+      - sqlserver
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+
+  nginx:
+    image: nginx:1-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  sqlserver_data:
