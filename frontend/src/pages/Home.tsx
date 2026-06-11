@@ -49,13 +49,13 @@ const Home = () => {
         <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-primary/5 via-transparent to-background" />
 
         <div className="relative z-10 text-center max-w-3xl mx-auto">
-          <h1 className="font-display font-extrabold text-foreground text-[96px] leading-[0.9] tracking-tight mb-4">
+          <h1 className="font-display font-extrabold text-foreground text-[56px] sm:text-[72px] lg:text-[96px] leading-[0.9] tracking-tight mb-4">
             WHO WINS?
           </h1>
           <p className="font-body text-muted text-lg mb-10">
             Crowd-Sourced ELO Battle Rankings
           </p>
-          <div className="flex items-center justify-center gap-4 flex-wrap">
+          <div className="flex items-center justify-center gap-4 flex-col sm:flex-row">
             <Button
               as="link"
               to="/create"

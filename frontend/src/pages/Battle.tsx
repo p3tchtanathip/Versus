@@ -94,11 +94,11 @@ const Battle = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <header className="grid grid-cols-3 items-center px-6 py-4 border-b border-border/50">
-        <div className="flex items-center gap-3">
+      <header className="flex items-center justify-between gap-2 sm:gap-3 px-4 sm:px-6 py-4 border-b border-border/50">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 sm:flex-none">
           <button
             onClick={() => navigate('/')}
-            className="text-muted hover:text-foreground transition-colors cursor-pointer"
+            className="text-muted hover:text-foreground transition-colors cursor-pointer shrink-0"
           >
             <MoveLeft className="w-5 h-5" />
           </button>
@@ -108,14 +108,15 @@ const Battle = () => {
           </h1>
         </div>
 
-        <div className="hidden sm:flex flex-col items-center gap-1 justify-self-center w-full max-w-xs">
-          <span className="font-body text-xs text-muted">
-            {played} battles fought · {percent}%
-          </span>
+        <div className="hidden md:flex flex-col px-4 pb-3 pt-2 border-b border-border/50 flex-1 max-w-sm mx-auto">
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="font-body text-[11px] text-muted">{played} battles fought</span>
+            <span className="font-mono text-[11px] text-muted">{percent}%</span>
+          </div>
           <ProgressBar value={played} max={total} size="sm" />
         </div>
 
-        <div className="justify-self-end">
+        <div className="shrink-0 ml-auto md:ml-0">
           <Button
             variant="ghost"
             size="sm"
@@ -127,7 +128,15 @@ const Battle = () => {
         </div>
       </header>
 
-      <main className="flex-1 flex items-center justify-center px-4 sm:px-8 py-8">
+      <div className="md:hidden px-4 pb-3 pt-2 border-b border-border/50">
+        <div className="flex items-center justify-between mb-1.5">
+          <span className="font-body text-[11px] text-muted">{played} battles fought</span>
+          <span className="font-mono text-[11px] text-muted">{percent}%</span>
+        </div>
+        <ProgressBar value={played} max={total} size="sm" />
+      </div>
+
+      <main className="flex-1 flex items-center justify-center px-2 sm:px-8 py-4 sm:py-8">
         {loading && !currentMatch ? (
           <div className="flex items-center gap-2 text-muted font-body">
             <div className="w-5 h-5 border-2 border-primary/50 border-t-primary rounded-full animate-spin" />
@@ -158,8 +167,8 @@ const Battle = () => {
         ) : null}
       </main>
 
-      <footer className="py-4 text-center">
-        <p className="font-body text-xs text-muted/60">Your vote shapes the global ranking</p>
+      <footer className="py-12 text-center">
+        <p className="font-body text-xs text-muted/60">No need to finish - results update after every vote</p>
       </footer>
     </div>
   );

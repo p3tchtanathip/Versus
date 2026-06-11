@@ -186,7 +186,7 @@ const CreateList = () => {
                       <button
                         key={cat.id}
                         onClick={() => { setSelectedCategory(cat.id); setSportsType(SportsSearchType.All); }}
-                        className={`cursor-pointer flex flex-col items-center gap-2 rounded-xl border-2 p-5 transition-all duration-200 ${
+                        className={`cursor-pointer flex flex-col items-center gap-2 rounded-xl border-2 p-3 sm:p-5 transition-all duration-200 ${
                           selected
                             ? 'border-primary bg-primary/10'
                             : 'border-border bg-surface hover:border-primary/40 hover:bg-surface-hover'

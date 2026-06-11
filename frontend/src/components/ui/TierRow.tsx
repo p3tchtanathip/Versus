@@ -45,8 +45,8 @@ export const TierRow = ({ tier, index }: { tier: TierGroupResponse; index: numbe
                   <span className="font-display font-bold text-xs text-foreground">{item.name.charAt(0)}</span>
                 )}
               </div>
-              <span className="font-body text-sm text-foreground whitespace-nowrap">{item.name}</span>
-              <span className="font-mono text-xs text-muted tabular-nums">{formatElo(item.eloRating)}</span>
+              <span className="font-body text-sm text-foreground truncate max-w-[100px] sm:max-w-[200px]">{item.name}</span>
+              <span className="font-mono text-xs text-muted tabular-nums shrink-0">{formatElo(item.eloRating)}</span>
               {selectedItem === item.id && (
                 <ChevronRight className="w-3.5 h-3.5 text-primary ml-1" />
               )}

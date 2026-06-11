@@ -31,7 +31,7 @@ const MatchCard = ({ item, status, delta, onVote }: MatchCardProps) => {
     : 'border-border';
 
   const wrapperClasses = [
-    'relative flex-1 max-w-[360px] rounded-2xl border-2 overflow-hidden transition-all duration-500',
+    'relative flex-1 max-w-[160px] sm:max-w-[360px] rounded-2xl border-2 overflow-hidden transition-all duration-500',
     borderColor,
     isInteractive && 'cursor-pointer hover:border-primary/60 hover:scale-[1.03] hover:shadow-[0_0_40px_rgba(232,255,71,0.15)]',
     isLoser && 'opacity-50',
@@ -45,15 +45,15 @@ const MatchCard = ({ item, status, delta, onVote }: MatchCardProps) => {
       <DeltaBadge delta={delta} isWinner={isWinner} />
 
       <div
-        className="aspect-[2/3] w-full flex items-center justify-center"
+        className="aspect-[3/4] sm:aspect-[2/3] w-full flex items-center justify-center"
         style={{ background: gradientFromName(item.name) }}
       >
         {item.imageUrl ? (
           <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
         ) : (
           <div className="text-center px-4 py-8">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-3">
-              <span className="font-display font-extrabold text-3xl text-muted">
+            <div className="w-10 h-10 sm:w-20 sm:h-20 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-2 sm:mb-3">
+              <span className="font-display font-extrabold text-xl sm:text-3xl text-muted">
                 {item.name.charAt(0)}
               </span>
             </div>
@@ -66,11 +66,11 @@ const MatchCard = ({ item, status, delta, onVote }: MatchCardProps) => {
         )}
       </div>
 
-      <div className="p-4 sm:p-5 bg-surface/95 backdrop-blur-sm">
-        <h3 className="font-display font-extrabold text-2xl sm:text-3xl text-foreground truncate leading-tight">
+      <div className="p-2 sm:p-5 bg-surface/95 backdrop-blur-sm">
+        <h3 className="font-display font-extrabold text-sm sm:text-3xl text-foreground truncate leading-tight">
           {item.name}
         </h3>
-        <p className="font-mono text-sm text-muted mt-1">
+        <p className="font-mono text-xs sm:text-sm text-muted mt-0 sm:mt-1">
           {formatElo(item.eloRating)} ELO
         </p>
       </div>

@@ -61,7 +61,7 @@ const Results = () => {
             )}
           </div>
 
-          <div className="flex gap-3 mt-6">
+          <div className="flex flex-col sm:flex-row gap-3 mt-6">
             {isComplete ? (
               <Button as="button" variant="primary" size="md" onClick={handlePlayAgain}>
                 <RefreshCw className="w-4 h-4" />

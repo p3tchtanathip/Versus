@@ -19,11 +19,11 @@ export const HistoryRow = ({ match, index }: { match: MatchResponse; index: numb
     <div className="w-7 h-7 rounded-full bg-gradient-to-br from-secondary/30 to-secondary/10 flex items-center justify-center shrink-0">
       <span className="font-display font-bold text-[10px] text-foreground">{match.winner.name.charAt(0)}</span>
     </div>
-    <span className="font-body text-sm text-foreground font-medium truncate max-w-[120px] sm:max-w-[180px]">
+    <span className="font-body text-sm text-foreground font-medium truncate max-w-[80px] sm:max-w-[180px]">
       {match.winner.name}
     </span>
     <span className="font-body text-xs text-muted shrink-0">beat</span>
-    <span className="font-body text-sm text-foreground truncate max-w-[120px] sm:max-w-[180px]">
+    <span className="font-body text-sm text-foreground truncate max-w-[80px] sm:max-w-[180px]">
       {match.loser.name}
     </span>
     <div className="ml-auto flex items-center gap-3 shrink-0">
