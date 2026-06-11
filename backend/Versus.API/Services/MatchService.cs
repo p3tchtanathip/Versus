@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Versus.API.Context;
 using Versus.API.DTOs.Requests;
 using Versus.API.DTOs.Responses;
@@ -72,54 +73,73 @@ namespace Versus.API.Services
                 throw new ArgumentException("Winner and loser must be different items.");
             }
 
-            var winner = await itemRepo.FindAsync(request.TierListId, request.WinnerId)
-                ?? throw new NotFoundException("Winner item not found.");
+            const int maxRetries = 1;
 
-            var loser = await itemRepo.FindAsync(request.TierListId, request.LoserId)
-                ?? throw new NotFoundException("Loser item not found.");
-
-            var eloResult = eloService.Calculate(winner.EloRating, loser.EloRating);
-
-            var match = new Match
+            for (var attempt = 0; attempt <= maxRetries; attempt++)
             {
-                TierListId = request.TierListId,
-                SessionId = sessionId,
-                WinnerId = winner.Id,
-                LoserId = loser.Id
-            };
+                var winner = await itemRepo.FindAsync(request.TierListId, request.WinnerId)
+                    ?? throw new NotFoundException("Winner item not found.");
 
-            var winnerHistory = new EloHistory
-            {
-                Id = Guid.NewGuid(),
-                MatchId = match.Id,
-                ItemId = winner.Id,
-                RatingBefore = eloResult.WinnerRatingBefore,
-                RatingAfter = eloResult.WinnerRatingAfter,
-                Delta = eloResult.WinnerDelta
-            };
+                var loser = await itemRepo.FindAsync(request.TierListId, request.LoserId)
+                    ?? throw new NotFoundException("Loser item not found.");
 
-            var loserHistory = new EloHistory
-            {
-                Id = Guid.NewGuid(),
-                MatchId = match.Id,
-                ItemId = loser.Id,
-                RatingBefore = eloResult.LoserRatingBefore,
-                RatingAfter = eloResult.LoserRatingAfter,
-                Delta = eloResult.LoserDelta
-            };
+                if (winner.EloRating <= 0) winner.EloRating = EloService.DefaultRating;
+                if (loser.EloRating <= 0) loser.EloRating = EloService.DefaultRating;
 
-            var savedMatch = await matchRepo.CreateAsync(match, winnerHistory, loserHistory, winner, loser);
+                var eloResult = eloService.Calculate(winner.EloRating, loser.EloRating);
 
-            return new MatchResponse
-            {
-                Id = savedMatch.Id,
-                TierListId = savedMatch.TierListId,
-                Winner = MapItem(winner),
-                Loser = MapItem(loser),
-                WinnerDelta = eloResult.WinnerDelta,
-                LoserDelta = eloResult.LoserDelta,
-                PlayedAt = savedMatch.PlayedAt
-            };
+                var match = new Match
+                {
+                    Id = Guid.NewGuid(),
+                    TierListId = request.TierListId,
+                    SessionId = sessionId,
+                    WinnerId = winner.Id,
+                    LoserId = loser.Id
+                };
+
+                var winnerHistory = new EloHistory
+                {
+                    Id = Guid.NewGuid(),
+                    MatchId = match.Id,
+                    ItemId = winner.Id,
+                    RatingBefore = eloResult.WinnerRatingBefore,
+                    RatingAfter = eloResult.WinnerRatingAfter,
+                    Delta = eloResult.WinnerDelta
+                };
+
+                var loserHistory = new EloHistory
+                {
+                    Id = Guid.NewGuid(),
+                    MatchId = match.Id,
+                    ItemId = loser.Id,
+                    RatingBefore = eloResult.LoserRatingBefore,
+                    RatingAfter = eloResult.LoserRatingAfter,
+                    Delta = eloResult.LoserDelta
+                };
+
+                try
+                {
+                    var savedMatch = await matchRepo.CreateAsync(match, winnerHistory, loserHistory, winner, loser);
+
+                    return new MatchResponse
+                    {
+                        Id = savedMatch.Id,
+                        TierListId = savedMatch.TierListId,
+                        Winner = MapItem(winner),
+                        Loser = MapItem(loser),
+                        WinnerDelta = eloResult.WinnerDelta,
+                        LoserDelta = eloResult.LoserDelta,
+                        PlayedAt = savedMatch.PlayedAt
+                    };
+                }
+                catch (DbUpdateConcurrencyException) when (attempt < maxRetries)
+                {
+                    await itemRepo.ReloadAsync(winner);
+                    await itemRepo.ReloadAsync(loser);
+                }
+            }
+
+            throw new InvalidOperationException("Failed to save match due to concurrent modification.");
         }
 
         public async Task ResetSessionHistoryAsync(Guid tierListId)

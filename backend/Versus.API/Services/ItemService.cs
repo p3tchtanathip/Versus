@@ -88,7 +88,7 @@ namespace Versus.API.Services
             {
                 ItemId = item.Id,
                 ItemName = item.Name,
-                InitialRating = 1000,
+                InitialRating = histories.Count > 0 ? histories[0].RatingBefore : item.EloRating,
                 Points = histories.Select(h => new EloHistoryGraphPointResponse
                 {
                     PlayedAt = h.Match.PlayedAt,

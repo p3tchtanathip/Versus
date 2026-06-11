@@ -5,8 +5,8 @@ namespace Versus.API.Services
 {
     public class EloService : IEloService
     {
-        private const float KFactor = 32f;
-        private const float DefaultRating = 1000f;
+        public const float KFactor = 32f;
+        public const float DefaultRating = 1000f;
 
         public EloResult Calculate(float winnerRating, float loserRating)
         {
@@ -16,15 +16,15 @@ namespace Versus.API.Services
             var winnerExpected = ExpectedScore(winnerRatingBefore, loserRatingBefore);
             var loserExpected = ExpectedScore(loserRatingBefore, winnerRatingBefore);
 
-            var winnerDelta = (int)MathF.Round(KFactor * (1f - winnerExpected));
-            var loserDelta = (int)MathF.Round(KFactor * (0f - loserExpected));
+            var winnerDelta = KFactor * (1f - winnerExpected);
+            var loserDelta = KFactor * (0f - loserExpected);
 
             return new EloResult(
-                (int)winnerRatingBefore,
-                (int)winnerRatingBefore + winnerDelta,
+                winnerRatingBefore,
+                winnerRatingBefore + winnerDelta,
                 winnerDelta,
-                (int)loserRatingBefore,
-                (int)loserRatingBefore + loserDelta,
+                loserRatingBefore,
+                loserRatingBefore + loserDelta,
                 loserDelta);
         }
 

@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Versus.API.Models
 {
     public class Item
@@ -12,6 +14,10 @@ namespace Versus.API.Models
 
         // FK
         public Guid TierListId { get; set; }
+
+        // Concurrency
+        [Timestamp]
+        public byte[] RowVersion { get; set; } = [];
 
         // Navigation Property
         public TierList TierList { get; set; } = null!;

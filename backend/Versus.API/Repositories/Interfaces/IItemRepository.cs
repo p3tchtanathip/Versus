@@ -14,5 +14,6 @@ namespace Versus.API.Repositories.Interfaces
         Task<List<Item>> GetByTierListIdAsync(Guid tierListId);
         Task<Item?> FindByIdAsync(Guid itemId);
         Task<List<EloHistory>> GetEloHistoryByItemIdAsync(Guid itemId);
+        Task ReloadAsync(Item item);
     }
 }

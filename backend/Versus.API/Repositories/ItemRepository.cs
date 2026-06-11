@@ -69,6 +69,11 @@ namespace Versus.API.Repositories
                 .FirstOrDefaultAsync(i => i.Id == itemId);
         }
 
+        public async Task ReloadAsync(Item item)
+        {
+            await db.Entry(item).ReloadAsync();
+        }
+
         public Task<List<EloHistory>> GetEloHistoryByItemIdAsync(Guid itemId)
         {
             return db.EloHistories
